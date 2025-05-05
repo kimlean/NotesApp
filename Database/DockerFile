@@ -1,0 +1,24 @@
+# Use Microsoft SQL Server base image
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy SQL scripts
+COPY Scripts/ /usr/src/app/scripts/
+
+# Copy entrypoint script
+COPY Scripts/entrypoint.sh /usr/src/app/entrypoint.sh
+
+# Make entrypoint executable
+RUN chmod +x /usr/src/app/entrypoint.sh
+
+# Expose SQL Server port
+EXPOSE 1433
+
+# Set environment variables
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=YourStrong!Passw0rd
+
+# Run entrypoint script
+CMD /usr/src/app/entrypoint.sh

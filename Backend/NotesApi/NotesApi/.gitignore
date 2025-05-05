@@ -1,0 +1,54 @@
+# .NET Core build artifacts
+bin/
+obj/
+out/
+
+# Visual Studio and Visual Studio Code files
+.vs/
+.vscode/
+*.sln.DotSettings.user
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.userprefs
+*.cache
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific files
+appsettings.Development.json
+appsettings.Production.json
+appsettings.*.json
+!appsettings.json
+launchSettings.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Rider
+.idea/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# NuGet packages
+*.nupkg
+package-lock.json
+
+# Database connection string
+connectionstrings.*

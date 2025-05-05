@@ -1,0 +1,32 @@
+USE NotesDB;
+GO
+
+-- Create Users table
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Username NVARCHAR(100) NOT NULL UNIQUE,
+    Email NVARCHAR(255) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+);
+GO
+
+-- Create Notes table
+CREATE TABLE Notes (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Title NVARCHAR(255) NOT NULL,
+    Content NVARCHAR(MAX),
+    UserId INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
+GO
+
+-- Create indexes for better performance
+CREATE INDEX IX_Notes_UserId ON Notes(UserId);
+CREATE INDEX IX_Notes_Title ON Notes(Title);
+CREATE INDEX IX_Users_Email ON Users(Email);
+CREATE INDEX IX_Users_Username ON Users(Username);
+GO
