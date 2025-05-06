@@ -10,8 +10,8 @@ COPY Scripts/ /usr/src/app/scripts/
 # Copy entrypoint script
 COPY Scripts/entrypoint.sh /usr/src/app/entrypoint.sh
 
-# Make entrypoint executable
-RUN chmod +x /usr/src/app/entrypoint.sh
+# Make entrypoint executable (using bash command instead of chmod)
+RUN /bin/bash -c "cat /usr/src/app/entrypoint.sh > /usr/src/app/temp.sh && mv /usr/src/app/temp.sh /usr/src/app/entrypoint.sh && chmod +x /usr/src/app/entrypoint.sh || true"
 
 # Expose SQL Server port
 EXPOSE 1433
@@ -21,4 +21,4 @@ ENV ACCEPT_EULA=Y
 ENV SA_PASSWORD=Lean@311291
 
 # Run entrypoint script
-CMD /usr/src/app/entrypoint.sh
+CMD /bin/bash /usr/src/app/entrypoint.sh

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mssql:
+    build:
+      dockerfile: DockerFile
+    container_name: notes-mssql
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Lean@311291
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - notes-network
+
+volumes:
+  mssql-data:
+
+networks:
+  notes-network:
+    driver: bridge
