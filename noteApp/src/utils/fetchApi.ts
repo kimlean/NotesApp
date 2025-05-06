@@ -27,15 +27,15 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
   }
 
   // Set default headers
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...fetchOptions.headers,
+    ...(fetchOptions.headers as Record<string, string>)
   };
 
   // Add authentication token
   const token = Cookies.get("token");
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   // Merge options
@@ -45,29 +45,41 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
   };
 
   // Make the request
-  const response = await fetch(url, requestOptions);
+  try {
+    const response = await fetch(url, requestOptions);
 
-  // Handle non-JSON responses
-  const contentType = response.headers.get("content-type");
-  const isJson = contentType?.includes("application/json");
-
-  let data;
-  if (isJson) {
-    data = await response.json();
-  } else {
-    data = await response.text();
-  }
-
-  // Handle errors
-  if (!response.ok) {
+    // Handle token expiration or authentication issues
     if (response.status === 401) {
+      console.warn("Authentication token expired or invalid");
       Cookies.remove("token");
       window.location.href = "/login";
+      throw new ApiError(401, "Authentication failed. Please log in again.");
     }
-    throw new ApiError(response.status, data?.message || "An error occurred");
-  }
 
-  return data;
+    // Handle non-JSON responses
+    const contentType = response.headers.get("content-type");
+    const isJson = contentType?.includes("application/json");
+
+    let data;
+    if (isJson) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+
+    // Handle other errors
+    if (!response.ok) {
+      throw new ApiError(response.status, data?.message || "An error occurred");
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    console.error("Network error:", error);
+    throw new ApiError(0, "Network error occurred. Please check your connection.");
+  }
 };
 
 // Helper methods

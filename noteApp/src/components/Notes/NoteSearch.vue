@@ -1,43 +1,44 @@
 <template>
-    <div class="max-w">
-      <div class="relative rounded-md shadow-sm">
-        <input
-          v-model="searchTerm"
-          @input="handleSearch"
-          type="text"
-          class="block w-full rounded-md border-gray-500 pl-10 py-2 focus:border-indigo-500 focus:ring-indigo-500"
-          placeholder="Search notes..."
-        />
-        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-          </svg>
-        </div>
-      </div>
+  <div class="w-full">
+    <div class="relative">
+      <input
+        type="text"
+        v-model="searchTerm"
+        @input="handleSearch"
+        placeholder="Search notes..."
+        class="bg-gray-50 w-full py-2 px-4 pr-10 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+      />
+      <button
+        v-if="searchTerm"
+        @click="clearSearch"
+        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
+      </button>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, watch } from 'vue';
-  
-  const emit = defineEmits(['search']);
-  
-  const searchTerm = ref('');
-  
-  const handleSearch = () => {
-    emit('search', searchTerm.value);
-  };
-  
-  // Debounce search
-  const debounceSearch = ref<ReturnType<typeof setTimeout> | null>(null);
-  
-  watch(searchTerm, () => {
-    if (debounceSearch.value) {
-      clearTimeout(debounceSearch.value);
-    }
-    
-    debounceSearch.value = setTimeout(() => {
-      handleSearch();
-    }, 300);
-  });
-  </script>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { debounce } from '@/utils/helpers';
+
+const emit = defineEmits(['search']);
+const searchTerm = ref('');
+
+// Debounced search function to prevent too many API calls
+const debouncedSearch = debounce((term: string) => {
+  emit('search', term);
+}, 300);
+
+const handleSearch = () => {
+  debouncedSearch(searchTerm.value);
+};
+
+const clearSearch = () => {
+  searchTerm.value = '';
+  emit('search', '');
+};
+</script>

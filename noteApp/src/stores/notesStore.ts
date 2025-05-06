@@ -12,6 +12,7 @@ export const useNotesStore = defineStore("notes", () => {
   const fetchNotes = async () => {
     try {
       loading.value = true;
+      error.value = null;
       notes.value = await api.get("/api/notes");
     } catch (err) {
       error.value = "Failed to fetch notes";
@@ -24,6 +25,7 @@ export const useNotesStore = defineStore("notes", () => {
   const fetchNote = async (id: number) => {
     try {
       loading.value = true;
+      error.value = null;
       currentNote.value = await api.get(`/api/notes/${id}`);
     } catch (err) {
       error.value = "Failed to fetch note";
@@ -33,11 +35,11 @@ export const useNotesStore = defineStore("notes", () => {
     }
   };
 
-  // New saveNote method for create or update
   const saveNote = async (noteDto: NoteSaveDto) => {
     try {
       loading.value = true;
-      const savedNote = await api.post("/api/notes/save", noteDto);
+      error.value = null;
+      const savedNote = await api.post<Note>("/api/notes/save", noteDto);
 
       if (noteDto.id) {
         // Update existing note in array
@@ -63,6 +65,7 @@ export const useNotesStore = defineStore("notes", () => {
   const deleteNote = async (id: number) => {
     try {
       loading.value = true;
+      error.value = null;
       await api.delete(`/api/notes/${id}`);
       notes.value = notes.value.filter((n) => n.id !== id);
     } catch (err) {
@@ -77,6 +80,7 @@ export const useNotesStore = defineStore("notes", () => {
   const searchNotes = async (searchTerm: string) => {
     try {
       loading.value = true;
+      error.value = null;
       notes.value = await api.get("/api/notes/search", { params: { searchTerm } });
     } catch (err) {
       error.value = "Failed to search notes";
@@ -86,6 +90,13 @@ export const useNotesStore = defineStore("notes", () => {
     }
   };
 
+  // Reset store state
+  const resetStore = () => {
+    notes.value = [];
+    currentNote.value = null;
+    error.value = null;
+  };
+
   return {
     notes,
     currentNote,
@@ -93,8 +104,9 @@ export const useNotesStore = defineStore("notes", () => {
     error,
     fetchNotes,
     fetchNote,
-    saveNote, // New save method
+    saveNote,
     deleteNote,
     searchNotes,
+    resetStore
   };
 });

@@ -7,7 +7,7 @@
         v-model="form.title"
         type="text"
         required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
+        class="bg-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
       />
     </div>
 
@@ -17,7 +17,7 @@
         id="content"
         v-model="form.content"
         rows="6"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-2 py-1"
+        class="bg-white mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
       ></textarea>
     </div>
 
@@ -44,13 +44,14 @@
   </form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, computed } from "vue";
 import { useNotesStore } from "@/stores/notesStore";
+import type { Note, NoteSaveDto } from "@/types/note";
 
 const props = defineProps({
   note: {
-    type: Object,
+    type: Object as () => Note | null,
     default: null,
   },
 });
@@ -91,15 +92,17 @@ const handleSubmit = async () => {
     loading.value = true;
     error.value = "";
 
-    await notesStore.saveNote({
+    const noteDto: NoteSaveDto = {
       id: noteId.value,
       title: form.value.title,
       content: form.value.content,
-    });
+    };
 
+    await notesStore.saveNote(noteDto);
     emit("saved");
   } catch (err) {
     error.value = "Failed to save note";
+    console.error("Error saving note:", err);
   } finally {
     loading.value = false;
   }
