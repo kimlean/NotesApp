@@ -1,5 +1,5 @@
-import api from "../utils/fetchApi";
-import type { LoginDto, RegisterDto } from "../types/auth";
+import api from "@/utils/fetchApi";
+import type { LoginDto, RegisterDto } from "@/types/auth";
 
 class AuthService {
   private static instance: AuthService;

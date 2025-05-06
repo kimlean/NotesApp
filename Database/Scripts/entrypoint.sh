@@ -26,9 +26,6 @@ echo "Creating tables..."
 echo "Creating stored procedures..."
 /opt/mssql-tools/bin/sqlcmd -d NotesDB -i /usr/src/app/scripts/3_CreateStoredProcedures.sql
 
-echo "Seeding data..."
-/opt/mssql-tools/bin/sqlcmd -d NotesDB -i /usr/src/app/scripts/4_SeedData.sql
-
 echo "Database initialization complete!"
 
 # Keep the container running

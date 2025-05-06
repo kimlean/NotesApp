@@ -7,7 +7,7 @@
         v-model="form.title"
         type="text"
         required
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"
       />
     </div>
 
@@ -17,7 +17,7 @@
         id="content"
         v-model="form.content"
         rows="6"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-2 py-1"
       ></textarea>
     </div>
 
@@ -46,7 +46,7 @@
 
 <script setup>
 import { ref, watch, computed } from "vue";
-import { useNotesStore } from "../../store/notesStore";
+import { useNotesStore } from "@/stores/notesStore";
 
 const props = defineProps({
   note: {

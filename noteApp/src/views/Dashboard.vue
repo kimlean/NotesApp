@@ -56,11 +56,11 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import { useAuthStore } from "../store/authStore";
-import { useNotesStore } from "../store/notesStore";
-import NoteList from "../components/Notes/NoteList.vue";
-import NoteForm from "../components/Notes/NoteForm.vue";
-import NoteSearch from "../components/Notes/NoteSearch.vue";
+import { useAuthStore } from "@/stores/authStore";
+import { useNotesStore } from "@/stores/notesStore";
+import NoteList from "@/components/Notes/NoteList.vue";
+import NoteForm from "@/components/Notes/NoteForm.vue";
+import NoteSearch from "@/components/Notes/NoteSearch.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();

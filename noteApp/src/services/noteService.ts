@@ -1,5 +1,5 @@
-import api from "../utils/fetchApi";
-import type { Note, NoteSaveDto } from "../types/note";
+import api from "@/utils/fetchApi";
+import type { Note, NoteSaveDto } from "@/types/note";
 
 class NoteService {
   private static instance: NoteService;

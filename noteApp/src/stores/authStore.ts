@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import Cookies from "js-cookie";
-import api from "../utils/fetchApi";
-import type { LoginDto, RegisterDto } from "../types/auth";
+import api from "@/utils/fetchApi";
+import type { LoginDto, RegisterDto } from "@/types/auth";
 
 export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = ref(!!Cookies.get("token"));
