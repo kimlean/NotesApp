@@ -13,7 +13,7 @@ echo "Running database initialization scripts..."
 # Set up SQLCMD connection information
 export SQLCMDSERVER=localhost
 export SQLCMDUSER=sa
-export SQLCMDPASSWORD=YourStrong!Passw0rd
+export SQLCMDPASSWORD=Lean@311291
 export SQLCMDBUFFERSIZE=10000
 
 # Execute SQL scripts in order

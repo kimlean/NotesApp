@@ -18,7 +18,7 @@ EXPOSE 1433
 
 # Set environment variables
 ENV ACCEPT_EULA=Y
-ENV SA_PASSWORD=YourStrong!Passw0rd
+ENV SA_PASSWORD=Lean@311291
 
 # Run entrypoint script
 CMD /usr/src/app/entrypoint.sh
