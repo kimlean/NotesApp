@@ -38,69 +38,74 @@
         :disabled="loading"
         class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
       >
-        {{ loading ? 'Saving...' : 'Save' }}
+        {{ loading ? "Saving..." : "Save" }}
       </button>
     </div>
   </form>
 </template>
 
-<script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-import { useNotesStore } from '../../store/notesStore';
-import type { Note } from '../../types/note';
+<script setup>
+import { ref, watch, computed } from "vue";
+import { useNotesStore } from "../../store/notesStore";
 
-const props = defineProps<{
-  note?: Note | null;
-}>();
+const props = defineProps({
+  note: {
+    type: Object,
+    default: null,
+  },
+});
 
-const emit = defineEmits(['saved', 'cancel']);
+const emit = defineEmits(["saved", "cancel"]);
 
 const notesStore = useNotesStore();
 const loading = ref(false);
-const error = ref('');
+const error = ref("");
 
 const form = ref({
-  title: '',
-  content: '',
+  title: "",
+  content: "",
 });
 
 const noteId = computed(() => props.note?.id || null);
 
-watch(() => props.note, (newNote) => {
-  if (newNote) {
-    form.value = {
-      title: newNote.title,
-      content: newNote.content,
-    };
-  } else {
-    form.value = {
-      title: '',
-      content: '',
-    };
-  }
-}, { immediate: true });
+watch(
+  () => props.note,
+  (newNote) => {
+    if (newNote) {
+      form.value = {
+        title: newNote.title,
+        content: newNote.content,
+      };
+    } else {
+      form.value = {
+        title: "",
+        content: "",
+      };
+    }
+  },
+  { immediate: true },
+);
 
 const handleSubmit = async () => {
   try {
     loading.value = true;
-    error.value = '';
-    
-    // Single call to save note (create or update)
+    error.value = "";
+
     await notesStore.saveNote({
       id: noteId.value,
       title: form.value.title,
       content: form.value.content,
     });
-    
-    emit('saved');
+
+    emit("saved");
   } catch (err) {
-    error.value = 'Failed to save note';
+    error.value = "Failed to save note";
   } finally {
     loading.value = false;
   }
 };
 
 const cancel = () => {
-  emit('cancel');
+  emit("cancel");
 };
 </script>

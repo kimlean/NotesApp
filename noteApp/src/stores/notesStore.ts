@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import api from '../utils/fetchApi';
-import type { Note, NoteSaveDto } from '../types/noteTypes';
+import { defineStore } from "pinia";
+import { ref } from "vue";
+import api from "../utils/fetchApi";
+import type { Note, NoteSaveDto } from "../types/note";
 
-export const useNotesStore = defineStore('notes', () => {
+export const useNotesStore = defineStore("notes", () => {
   const notes = ref<Note[]>([]);
   const currentNote = ref<Note | null>(null);
   const loading = ref(false);
@@ -12,10 +12,10 @@ export const useNotesStore = defineStore('notes', () => {
   const fetchNotes = async () => {
     try {
       loading.value = true;
-      notes.value = await api.get('/api/notes');
+      notes.value = await api.get("/api/notes");
     } catch (err) {
-      error.value = 'Failed to fetch notes';
-      console.error('Error fetching notes:', err);
+      error.value = "Failed to fetch notes";
+      console.error("Error fetching notes:", err);
     } finally {
       loading.value = false;
     }
@@ -26,8 +26,8 @@ export const useNotesStore = defineStore('notes', () => {
       loading.value = true;
       currentNote.value = await api.get(`/api/notes/${id}`);
     } catch (err) {
-      error.value = 'Failed to fetch note';
-      console.error('Error fetching note:', err);
+      error.value = "Failed to fetch note";
+      console.error("Error fetching note:", err);
     } finally {
       loading.value = false;
     }
@@ -37,11 +37,11 @@ export const useNotesStore = defineStore('notes', () => {
   const saveNote = async (noteDto: NoteSaveDto) => {
     try {
       loading.value = true;
-      const savedNote = await api.post('/api/notes/save', noteDto);
-      
+      const savedNote = await api.post("/api/notes/save", noteDto);
+
       if (noteDto.id) {
         // Update existing note in array
-        const index = notes.value.findIndex(n => n.id === noteDto.id);
+        const index = notes.value.findIndex((n) => n.id === noteDto.id);
         if (index !== -1) {
           notes.value[index] = savedNote;
         }
@@ -49,11 +49,11 @@ export const useNotesStore = defineStore('notes', () => {
         // Add new note to beginning of array
         notes.value.unshift(savedNote);
       }
-      
+
       return savedNote;
     } catch (err) {
-      error.value = 'Failed to save note';
-      console.error('Error saving note:', err);
+      error.value = "Failed to save note";
+      console.error("Error saving note:", err);
       throw err;
     } finally {
       loading.value = false;
@@ -64,10 +64,10 @@ export const useNotesStore = defineStore('notes', () => {
     try {
       loading.value = true;
       await api.delete(`/api/notes/${id}`);
-      notes.value = notes.value.filter(n => n.id !== id);
+      notes.value = notes.value.filter((n) => n.id !== id);
     } catch (err) {
-      error.value = 'Failed to delete note';
-      console.error('Error deleting note:', err);
+      error.value = "Failed to delete note";
+      console.error("Error deleting note:", err);
       throw err;
     } finally {
       loading.value = false;
@@ -77,10 +77,10 @@ export const useNotesStore = defineStore('notes', () => {
   const searchNotes = async (searchTerm: string) => {
     try {
       loading.value = true;
-      notes.value = await api.get('/api/notes/search', { params: { searchTerm } });
+      notes.value = await api.get("/api/notes/search", { params: { searchTerm } });
     } catch (err) {
-      error.value = 'Failed to search notes';
-      console.error('Error searching notes:', err);
+      error.value = "Failed to search notes";
+      console.error("Error searching notes:", err);
     } finally {
       loading.value = false;
     }
@@ -93,8 +93,8 @@ export const useNotesStore = defineStore('notes', () => {
     error,
     fetchNotes,
     fetchNote,
-    saveNote,  // New save method
+    saveNote, // New save method
     deleteNote,
-    searchNotes
+    searchNotes,
   };
 });

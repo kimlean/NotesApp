@@ -1,15 +1,18 @@
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 interface FetchOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
 class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
   }
 }
 
@@ -25,12 +28,12 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
 
   // Set default headers
   const headers: HeadersInit = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...fetchOptions.headers,
   };
 
   // Add authentication token
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -45,8 +48,8 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
   const response = await fetch(url, requestOptions);
 
   // Handle non-JSON responses
-  const contentType = response.headers.get('content-type');
-  const isJson = contentType?.includes('application/json');
+  const contentType = response.headers.get("content-type");
+  const isJson = contentType?.includes("application/json");
 
   let data;
   if (isJson) {
@@ -58,10 +61,10 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
   // Handle errors
   if (!response.ok) {
     if (response.status === 401) {
-      Cookies.remove('token');
-      window.location.href = '/login';
+      Cookies.remove("token");
+      window.location.href = "/login";
     }
-    throw new ApiError(response.status, data?.message || 'An error occurred');
+    throw new ApiError(response.status, data?.message || "An error occurred");
   }
 
   return data;
@@ -69,17 +72,17 @@ const fetchApi = async <T = any>(endpoint: string, options: FetchOptions = {}): 
 
 // Helper methods
 const api = {
-  get: <T = any>(endpoint: string, options?: FetchOptions) => 
-    fetchApi<T>(endpoint, { ...options, method: 'GET' }),
+  get: <T = any>(endpoint: string, options?: FetchOptions) =>
+    fetchApi<T>(endpoint, { ...options, method: "GET" }),
 
-  post: <T = any>(endpoint: string, body: any, options?: FetchOptions) => 
-    fetchApi<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
+  post: <T = any>(endpoint: string, body: any, options?: FetchOptions) =>
+    fetchApi<T>(endpoint, { ...options, method: "POST", body: JSON.stringify(body) }),
 
-  put: <T = any>(endpoint: string, body: any, options?: FetchOptions) => 
-    fetchApi<T>(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) }),
+  put: <T = any>(endpoint: string, body: any, options?: FetchOptions) =>
+    fetchApi<T>(endpoint, { ...options, method: "PUT", body: JSON.stringify(body) }),
 
-  delete: <T = any>(endpoint: string, options?: FetchOptions) => 
-    fetchApi<T>(endpoint, { ...options, method: 'DELETE' }),
+  delete: <T = any>(endpoint: string, options?: FetchOptions) =>
+    fetchApi<T>(endpoint, { ...options, method: "DELETE" }),
 };
 
 export default api;

@@ -1,5 +1,5 @@
-import api from '../utils/fetchApi';
-import type { Note, NoteSaveDto } from '../types/noteTypes';
+import api from "../utils/fetchApi";
+import type { Note, NoteSaveDto } from "../types/note";
 
 class NoteService {
   private static instance: NoteService;
@@ -14,16 +14,16 @@ class NoteService {
   }
 
   public async getNotes(): Promise<Note[]> {
-    return api.get('/api/notes');
+    return api.get("/api/notes");
   }
 
   public async getNote(id: number): Promise<Note> {
     return api.get(`/api/notes/${id}`);
   }
 
-  // New save method for create or update
+  // Unified save method for create or update
   public async saveNote(noteDto: NoteSaveDto): Promise<Note> {
-    return api.post('/api/notes/save', noteDto);
+    return api.post("/api/notes/save", noteDto);
   }
 
   public async deleteNote(id: number): Promise<void> {
@@ -31,7 +31,7 @@ class NoteService {
   }
 
   public async searchNotes(searchTerm: string): Promise<Note[]> {
-    return api.get('/api/notes/search', { params: { searchTerm } });
+    return api.get("/api/notes/search", { params: { searchTerm } });
   }
 }
 

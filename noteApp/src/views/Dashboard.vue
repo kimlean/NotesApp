@@ -53,30 +53,29 @@
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '../store/authStore';
-import { useNotesStore } from '../store/notesStore';
-import NoteList from '../components/Notes/NoteList.vue';
-import NoteForm from '../components/Notes/NoteForm.vue';
-import NoteSearch from '../components/Notes/NoteSearch.vue';
-import type { Note } from '../types/note';
+<script setup>
+import { ref, computed } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../store/authStore";
+import { useNotesStore } from "../store/notesStore";
+import NoteList from "../components/Notes/NoteList.vue";
+import NoteForm from "../components/Notes/NoteForm.vue";
+import NoteSearch from "../components/Notes/NoteSearch.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
 const notesStore = useNotesStore();
 
 const showForm = ref(false);
-const currentNote = ref<Note | null>(null);
+const currentNote = ref(null);
 
 const formTitle = computed(() => {
-  return currentNote.value ? 'Edit Note' : 'Create Note';
+  return currentNote.value ? "Edit Note" : "Create Note";
 });
 
 const handleLogout = () => {
   authStore.logout();
-  router.push('/login');
+  router.push("/login");
 };
 
 const createNewNote = () => {
@@ -84,7 +83,7 @@ const createNewNote = () => {
   showForm.value = true;
 };
 
-const editNote = (note: Note) => {
+const editNote = (note) => {
   currentNote.value = note;
   showForm.value = true;
 };
@@ -92,7 +91,6 @@ const editNote = (note: Note) => {
 const handleNoteFormSaved = () => {
   showForm.value = false;
   currentNote.value = null;
-  // notesStore.fetchNotes(); // Not needed if using saveNote method in store
 };
 
 const handleNoteFormCancel = () => {
@@ -100,7 +98,7 @@ const handleNoteFormCancel = () => {
   currentNote.value = null;
 };
 
-const handleSearch = (searchTerm: string) => {
+const handleSearch = (searchTerm) => {
   if (searchTerm) {
     notesStore.searchNotes(searchTerm);
   } else {

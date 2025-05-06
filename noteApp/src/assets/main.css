@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import './base.css';
+@import "./base.css";
 
 @layer components {
   .line-clamp-3 {
