@@ -58,7 +58,6 @@ const handleSubmit = async () => {
     loading.value = true;
     error.value = '';
     
-    // const success = await authStore.login(form.value);
     const success = await authStore.login(form.value);
     if (success) {
       router.push('/dashboard');

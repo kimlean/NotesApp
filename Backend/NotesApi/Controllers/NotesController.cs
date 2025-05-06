@@ -1,42 +1,69 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NotesApi.Models;
 using NotesApi.Services;
+using System.Security.Claims;
 
 namespace NotesApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    [Authorize]
+    public class NotesController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly INoteService _noteService;
 
-        public AuthController(IAuthService authService)
+        public NotesController(INoteService noteService)
         {
-            _authService = authService;
+            _noteService = noteService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> Register([FromBody] RegisterDto registerDto)
+        private int GetUserId()
         {
-            if (await _authService.UserExists(registerDto.Email))
-            {
-                return BadRequest("User with this email already exists");
-            }
-
-            var user = await _authService.Register(registerDto);
-            return Ok(user);
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<object>> Login([FromBody] LoginDto loginDto)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
         {
-            var token = await _authService.Login(loginDto);
-            if (token == null)
-            {
-                return Unauthorized("Invalid credentials");
-            }
+            var notes = await _noteService.GetUserNotes(GetUserId());
+            return Ok(notes);
+        }
 
-            return Ok(new { token });
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Note>> GetNote(int id)
+        {
+            var note = await _noteService.GetNote(id, GetUserId());
+            if (note == null)
+            {
+                return NotFound();
+            }
+            return Ok(note);
+        }
+
+        [HttpPost("save")]
+        public async Task<ActionResult<Note>> SaveNote([FromBody] NoteSaveDto noteDto)
+        {
+            var note = await _noteService.SaveNote(noteDto, GetUserId());
+            return Ok(note);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNote(int id)
+        {
+            var success = await _noteService.DeleteNote(id, GetUserId());
+            if (!success)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Note>>> SearchNotes([FromQuery] string searchTerm)
+        {
+            var notes = await _noteService.SearchNotes(GetUserId(), searchTerm);
+            return Ok(notes);
         }
     }
 }

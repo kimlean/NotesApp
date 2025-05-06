@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: notes-db
     environment:
-      SA_PASSWORD: YourStrong!Passw0rd
+      SA_PASSWORD: lean@311291
       ACCEPT_EULA: Y
       MSSQL_PID: Express
     ports:
@@ -18,7 +18,7 @@ services:
     networks:
       - notes-network
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong!Passw0rd -Q 'SELECT 1'"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lean@311291 -Q 'SELECT 1'"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -32,7 +32,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=database;Database=NotesDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Server=database;Database=NotesDB;User Id=sa;Password=lean@311291;TrustServerCertificate=True;
       - Jwt__SecretKey=ThisIsMySecretKeyForJWTTokenGeneration123456789
       - Jwt__Issuer=NotesApp
       - Jwt__Audience=NotesAppUsers

@@ -1,69 +1,44 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using NotesApi.Models;
 using NotesApi.Services;
-using System.Security.Claims;
 
 namespace NotesApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class NotesController : ControllerBase
+    public class AuthController : ControllerBase
     {
-        private readonly INoteService _noteService;
+        private readonly IAuthService _authService;
 
-        public NotesController(INoteService noteService)
+        public AuthController(IAuthService authService)
         {
-            _noteService = noteService;
+            _authService = authService;
         }
 
-        private int GetUserId()
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> Register([FromBody] RegisterDto registerDto)
         {
-            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Note>>> GetNotes()
-        {
-            var notes = await _noteService.GetUserNotes(GetUserId());
-            return Ok(notes);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Note>> GetNote(int id)
-        {
-            var note = await _noteService.GetNote(id, GetUserId());
-            if (note == null)
+            if (await _authService.UserExists(registerDto.Email))
             {
-                return NotFound();
+                return BadRequest("User with this email already exists");
             }
-            return Ok(note);
+
+            var user = await _authService.Register(registerDto);
+            return Ok(user);
         }
 
-        [HttpPost("save")]
-        public async Task<ActionResult<Note>> SaveNote([FromBody] NoteSaveDto noteDto)
+        [HttpPost("login")]
+        public async Task<ActionResult<object>> Login([FromBody] LoginDto loginDto)
         {
-            var note = await _noteService.SaveNote(noteDto, GetUserId());
-            return Ok(note);
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteNote(int id)
-        {
-            var success = await _noteService.DeleteNote(id, GetUserId());
-            if (!success)
+            var token = await _authService.Login(loginDto);
+            if (token == null)
             {
-                return NotFound();
+                return Unauthorized("Invalid credentials");
             }
-            return NoContent();
-        }
 
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<Note>>> SearchNotes([FromQuery] string searchTerm)
-        {
-            var notes = await _noteService.SearchNotes(GetUserId(), searchTerm);
-            return Ok(notes);
+            return Ok(new { token });
         }
     }
 }
