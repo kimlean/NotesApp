@@ -46,10 +46,18 @@ namespace NotesApi.Repositories
             parameters.Add("@Content", noteDto.Content);
             parameters.Add("@UserId", userId);
 
-            var result = await connection.QuerySingleAsync("sp_CreateOrUpdateNote", parameters,
+            var result = await connection.QuerySingleAsync<dynamic>("sp_CreateOrUpdateNote", parameters,
                 commandType: System.Data.CommandType.StoredProcedure);
 
-            return await GetById(result.NoteId, userId);
+            // Convert to int explicitly, handling the dynamic object properly
+            int noteId = result.NoteId != null ? Convert.ToInt32(result.NoteId) : 0;
+
+            if (noteId == 0)
+            {
+                throw new Exception("Failed to save note. Note ID returned was invalid.");
+            }
+
+            return await GetById(noteId, userId);
         }
 
         public async Task<bool> Delete(int noteId, int userId)

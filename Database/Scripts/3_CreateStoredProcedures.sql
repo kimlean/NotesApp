@@ -1,4 +1,4 @@
-    USE NotesDB;
+USE NotesDB;
 GO
 
 -- Stored Procedure for User Registration
@@ -8,8 +8,10 @@ CREATE OR ALTER PROCEDURE sp_RegisterUser
     @PasswordHash NVARCHAR(255)
 AS
 BEGIN
-    INSERT INTO Users (Username, Email, PasswordHash)
-    VALUES (@Username, @Email, @PasswordHash);
+    INSERT INTO Users (Username, Email, PasswordHash, CreatedAt, UpdatedAt)
+    VALUES (@Username, @Email, @PasswordHash, 
+            CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME),
+            CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME));
     
     SELECT SCOPE_IDENTITY() AS UserId;
 END
@@ -44,8 +46,10 @@ CREATE OR ALTER PROCEDURE sp_CreateNote
     @UserId INT
 AS
 BEGIN
-    INSERT INTO Notes (Title, Content, UserId)
-    VALUES (@Title, @Content, @UserId);
+    INSERT INTO Notes (Title, Content, UserId, CreatedAt, UpdatedAt)
+    VALUES (@Title, @Content, @UserId, 
+            CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME),
+            CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME));
     
     SELECT SCOPE_IDENTITY() AS NoteId;
 END
@@ -62,8 +66,10 @@ BEGIN
     IF @NoteId IS NULL OR @NoteId = 0
     BEGIN
         -- Create new note
-        INSERT INTO Notes (Title, Content, UserId)
-        VALUES (@Title, @Content, @UserId);
+        INSERT INTO Notes (Title, Content, UserId, CreatedAt, UpdatedAt)
+        VALUES (@Title, @Content, @UserId, 
+                CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME),
+                CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME));
         
         SELECT SCOPE_IDENTITY() AS NoteId, 'created' AS Operation;
     END
@@ -73,7 +79,7 @@ BEGIN
         UPDATE Notes
         SET Title = @Title,
             Content = @Content,
-            UpdatedAt = GETDATE()
+            UpdatedAt = CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME)
         WHERE Id = @NoteId AND UserId = @UserId;
         
         IF @@ROWCOUNT > 0
@@ -119,7 +125,7 @@ BEGIN
     UPDATE Notes
     SET Title = @Title,
         Content = @Content,
-        UpdatedAt = GETDATE()
+        UpdatedAt = CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME)
     WHERE Id = @NoteId AND UserId = @UserId;
     
     SELECT @@ROWCOUNT AS RowsAffected;
