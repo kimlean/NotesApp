@@ -3,7 +3,7 @@ version: '3.8'
 services:
   mssql:
     build:
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: notes-mssql
     ports:
       - "1433:1433"

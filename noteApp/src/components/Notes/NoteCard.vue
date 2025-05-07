@@ -18,7 +18,7 @@
     <p class="text-gray-600 line-clamp-3">{{ note.content }}</p>
     <div class="flex justify-between items-center text-sm text-gray-500 mt-4">
       <span>{{ formatDate(note.createdAt) }}</span>
-      <span v-if="note.updatedAt !== note.createdAt">
+      <span v-if="!note.updatedAt">
         Updated: {{ formatDate(note.updatedAt) }}
       </span>
     </div>

@@ -66,9 +66,8 @@ BEGIN
     IF @NoteId IS NULL OR @NoteId = 0
     BEGIN
         -- Create new note
-        INSERT INTO Notes (Title, Content, UserId, CreatedAt, UpdatedAt)
+        INSERT INTO Notes (Title, Content, UserId, CreatedAt)
         VALUES (@Title, @Content, @UserId, 
-                CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME),
                 CAST(SYSDATETIMEOFFSET() AT TIME ZONE 'SE Asia Standard Time' AS DATETIME));
         
         SELECT SCOPE_IDENTITY() AS NoteId, 'created' AS Operation;

@@ -48,7 +48,7 @@ services:
 
   frontend:
     build:
-      context: ./Frontend
+      context: ./noteApp
       dockerfile: Dockerfile
     container_name: notes-web
     environment:
